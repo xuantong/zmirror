@@ -22,6 +22,8 @@ import urllib.parse
 import requests
 from flask import Flask, request, make_response, Response, redirect
 from . import CONSTS
+from memory_profiler import profile
+
 
 try:
     # for python 3.5+ Type Hint
@@ -327,6 +329,7 @@ regex_request_rewriter_main_domain = re.compile(REGEX_MY_HOST_NAME)
 # 用于函数 response_text_basic_mirrorlization()
 # 理论上, 在大量域名的情况下, 会比现有的暴力字符串替换要快, 并且未来可以更强大的域名通配符
 # v0.28.0加入, v0.28.3后默认启用
+@profile
 def _regex_generate__basic_mirrorlization():
     """产生 regex_basic_mirrorlization
     用一个函数包裹起来是因为在 try_match_and_add_domain_to_rewrite_white_list()
@@ -394,6 +397,7 @@ app = Flask(  # type: Flask
 
 
 # ########## Begin Utils #############
+@profile
 def response_text_basic_mirrorlization(text):
     """
     response_text_basic_rewrite() 的实验性升级版本, 默认启用
@@ -449,6 +453,7 @@ def response_text_basic_mirrorlization(text):
     return regex_basic_mirrorlization.sub(regex_reassemble, text)
 
 
+@profile
 def encoding_detect(byte_content):
     """
     试图解析并返回二进制串的编码, 如果失败, 则返回 None
@@ -600,6 +605,7 @@ def is_external_domain(domain):
 
 
 # noinspection PyGlobalUndefined
+@profile
 def try_match_and_add_domain_to_rewrite_white_list(domain, force_add=False):
     """
     若域名与`domains_whitelist_auto_add_glob_list`中的通配符匹配, 则加入 external_domains 列表
@@ -643,7 +649,7 @@ def try_match_and_add_domain_to_rewrite_white_list(domain, force_add=False):
 
     return True
 
-
+@profile
 def decode_mirror_url(mirror_url=None):
     """
     解析镜像url(可能含有extdomains), 并提取出原始url信息
@@ -710,7 +716,7 @@ def decode_mirror_url(mirror_url=None):
 # 函数别名, 为了兼容早期版本的配置文件
 extract_from_url_may_have_extdomains = decode_mirror_url
 
-
+@profile
 # noinspection PyShadowingNames
 def encode_mirror_url(raw_url_or_path, remote_domain=None, is_scheme=None, is_escape=False):
     """convert url from remote to mirror url
@@ -1663,6 +1669,7 @@ def extract_client_header():
 
 
 # noinspection SpellCheckingInspection
+@profile
 def client_requests_text_rewrite(raw_text):
     """
     Rewrite proxy domain to origin domain, extdomains supported.
@@ -1717,6 +1724,8 @@ def client_requests_text_rewrite(raw_text):
     return replaced
 
 
+
+@profile
 def extract_url_path_and_query(full_url=None, no_query=False):
     """
     Convert http://foo.bar.com/aaa/p.html?x=y to /aaa/p.html?x=y

@@ -83,13 +83,13 @@ domains_whitelist_auto_add_glob_list = ('*.kernel.org',)
 # Global proxy option, True or False (case sensitive)
 # Tip: If you want to make an GOOGLE mirror in China, you need an foreign proxy.
 #        However, if you run this script in foreign server, which can access google directly, set it to False
-is_use_proxy = False
+is_use_proxy = True
 
 # If is_use_proxy = False, the following setting would NOT have any effect
 # DO NOT support socks4/5 proxy. If you want to use socks proxy, please use Privoxy to convert them to http(s) proxy.
 requests_proxies = dict(
-    http='http://127.0.0.1:8123',
-    https='https://127.0.0.1:8123',
+    http='http://127.0.0.1:7890',
+    https='http://127.0.0.1:7890',
 )
 
 # ############## Output Settings ##############
